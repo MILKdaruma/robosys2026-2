@@ -1,26 +1,42 @@
-#!/bin/bash
-  # SPDX-FileCopyrightText: 2026 Teruma Yamamoto
-  # SPDX-License-Identifier: BSD-3-Clause
+#!/bin/bash -xv
+# SPDX-FileCopyrightText: 2026 Teruma Yamamoto <TRyamamototeruma@gmail.com>
+# SPDX-License-Identifier: BSD-3-Clause
 
- ng () {                               # 関数ngの定義（P18と同じ）
-         echo ${1}行目のテスト失敗
-        res=1                          # 失敗したことを記録
- }
-res=0                                  # 0: 失敗なし（ngが呼ばれると1になる）
-out=$(seq 5 | ./plus)              
-[ "${out}" = 15 ] || ng "$LINENO"      # 期待する出力（15）でなければngを呼び出す
-### NORMAL INPUT ###
-out=$(seq 5 | ./plus)
-[ "$?" = 0 ]      || ng "$LINENO"
-[ "${out}" = 15 ] || ng "$LINENO"
+ng () {
+    echo "${1}行目が違うよ"
+    res=1
+}
 
-### STRANGE INPUT ###
-out=$(echo あ | ./plus)           #計算できない値を入力してみる
-[ "$?" = 1 ]      || ng "$LINENO" #終了ステータスが1なのを確認
-[ "${out}" = "" ] || ng "$LINENO" #上の行と入れ替えるとダメ（なぜ？）
+res=0
 
-out=$(echo | ./plus)              #なにも入力しない
-[ "$?" = 1 ]      || ng "$LINENO" #これも異常終了する
-[ "${out}" = "" ] || ng "$LINENO"
-[ "${res}" = 0 ] && echo OK            # 通ったのが（人間に）分かるように表示
-exit $res                
+# テストケース1: 合法な例
+out=$(echo "0.2\50" | ./bbsyosoku)
+[ "${out}" = "合法です: エネルギー 0.250 J" ] || ng "$LINENO"
+
+# テストケース2: 規制初速
+out=$(echo "0.2\100" | ./bbsyosoku)
+[ "${out}" = "規制初速です: エネルギー 1.000 J" ] || ng "$LINENO"
+
+# テストケース3: 0.25で合法な例
+out=$(echo "0.25\80" | ./bbsyosoku)
+[ "${out}" = "合法です: エネルギー 0.800 J" ] || ng "$LINENO"
+
+# テストケース4: 0.25で規制初速
+out=$(echo "0.25\100" | ./bbsyosoku)
+[ "${out}" = "規制初速です: エネルギー 1.250 J" ] || ng "$LINENO"
+
+# テストケース5: 0.28で合法な例
+out=$(echo "0.28\80" | ./bbsyosoku)
+[ "${out}" = "合法です: エネルギー 0.896 J" ] || ng "$LINENO"
+
+# テストケース6: 0.28で規制初速
+out=$(echo "0.28\120" | ./bbsyosoku)
+[ "${out}" = "規制初速です: エネルギー 2.016 J" ] || ng "$LINENO"
+
+# テストケース7: 数値以外の入力
+out=$(echo "a\50" | ./bbsyosoku)
+[ "${out}" = "エラー: 数値を入力してください" ] || ng "$LINENO"
+
+# テスト結果の確認
+[ "${res}" = 0 ] && echo "OK"
+exit $res
