@@ -28,7 +28,7 @@
 ### リポジトリをクローン
 以下のコマンドをターミナル上で実行します。
 ```
-https://github.com/MILKdaruma/robosys2026-2
+git clone https://github.com/MILKdaruma/robosys2026-2
 ```
 ## ディレクトリへの移動
 ```
