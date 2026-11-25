@@ -1,4 +1,4 @@
-# robosys2024
+# robosys2026
 ロボットシステム学　課題
 ## 目次
 - [概要](#概要)
@@ -28,11 +28,11 @@
 ### リポジトリをクローン
 以下のコマンドをターミナル上で実行します。
 ```
-git clone https://github.com/MILKdaruma/robosys2024
+https://github.com/MILKdaruma/robosys2026-2
 ```
 ## ディレクトリへの移動
 ```
-cd robosys2024
+cd robosys2026-2
 ```
 ## 実行方法
 
